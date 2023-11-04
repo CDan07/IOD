@@ -1,0 +1,40 @@
+from itertools import combinations
+def find_feature_correlations(df):
+    
+    """
+    Find correlations between df features and convert to a format 
+    with one feature1 vs. feature2 correlation value per row 
+    
+    _Params:_
+    
+    df: pandas DataFrame, features as columns. All datatypes must be numeric
+    
+    Returns a pandas DataFrame where a row contains one feature1 vs. feature2 correlation value
+    """
+    
+    # initalise variable lists 
+    var1 = []
+    var2 = []
+    pearsons = []
+    pvalues = []
+    
+    # iterate over generator for tuples of feature combination pairs
+    for comb in combinations(df.columns.tolist(), 2):
+        
+        v1 = comb[0] 
+        var1.append(v1) # save feature 1 to list 
+
+        v2 = comb[1]
+        var2.append(v2) # save feature 2 to list
+        
+        p, p_value = stats.pearsonr(df[v1], df[v2]) # get pearson correlation
+        pearsons.append(p)
+        pvalues.append(p_value)
+    
+    # Build dataframe of feature1 vs. feature2 pearson correlation
+    corr_df = pd.DataFrame({'Feature1': var1,
+                            'Feature2': var2,
+                            'P': pearsons,
+                            'p-value': pvalues})
+    
+    return corr_df
